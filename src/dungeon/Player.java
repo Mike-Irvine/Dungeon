@@ -22,7 +22,22 @@ public class Player implements Movable {
 
     @Override
     public void move(String direction) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        switch (direction) {
+            case "w":
+                this.verticalPosition -= 1;
+                break;
+            case "s":
+                this.verticalPosition += 1;
+                break;
+            case "a":
+                this.horizontalPosition -= 1;
+                break;
+            case "d":
+                this.horizontalPosition =+ 1;
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
