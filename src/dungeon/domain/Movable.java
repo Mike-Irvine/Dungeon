@@ -3,7 +3,7 @@ package dungeon.domain;
 import dungeon.utility.Direction;
 
 public interface Movable {
-    int horizontalPosition();
-    int verticalPosition();
+    int getHorizontalPosition();
+    int getVerticalPosition();
     void move(Direction dir);
 }

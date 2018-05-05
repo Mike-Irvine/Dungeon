@@ -13,12 +13,12 @@ public class Player implements Movable {
     }
 
     @Override
-    public int horizontalPosition() {
+    public int getHorizontalPosition() {
         return this.horizontalPosition;
     }
 
     @Override
-    public int verticalPosition() {
+    public int getVerticalPosition() {
         return this.verticalPosition;
     }
 
