@@ -1,4 +1,6 @@
-package dungeon;
+package dungeon.domain;
+
+import dungeon.utility.Direction;
 
 public interface Movable {
     int horizontalPosition();

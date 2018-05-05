@@ -1,4 +1,4 @@
-package dungeon;
+package dungeon.logic;
 
 public class Dungeon {
     
