@@ -21,18 +21,18 @@ public class Vampire implements Movable {
     }
 
     @Override
-    public void move(String direction) {
-        switch (direction) {
-            case "w":
+    public void move(Direction dir) {
+        switch (dir) {
+            case UP:
                 this.verticalPosition -= 1;
                 break;
-            case "s":
+            case DOWN:
                 this.verticalPosition += 1;
                 break;
-            case "a":
+            case LEFT:
                 this.horizontalPosition -= 1;
                 break;
-            case "d":
+            case RIGHT:
                 this.horizontalPosition =+ 1;
                 break;
             default:
