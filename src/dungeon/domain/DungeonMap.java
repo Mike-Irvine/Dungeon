@@ -28,9 +28,12 @@ public class DungeonMap {
         }
     }
     
-    public void step(Direction dir) {
+    public void stepPlayer(Direction dir) {
         // attempt to move player in requested direction
         this.move(dir, this.player);
+    }
+    
+    public void stepVampires() {
         // attempt to move each vampire
         for (Movable vampire : this.vampires) {
             switch (new Random().nextInt(4)) {
