@@ -19,12 +19,23 @@ public class DungeonMap {
     }
     
     public void addVampires(int vampires) {
+        boolean duplicate;
         for (int i = 0; i < vampires; i++) {
+            duplicate = false;
             // determine random starting location for each vampire
             int horizontalPosition = new Random().nextInt(length);
             int verticalPosition = new Random().nextInt(height);
-            // add vampire to list of vampires
-            this.vampires.add(new Vampire(horizontalPosition, verticalPosition));
+            for (Movable vampire : this.vampires) { // check if vampire already in this starting location
+                if (vampire.getHorizontalPosition() == horizontalPosition && vampire.getVerticalPosition() == verticalPosition) {
+                    duplicate = true; // mark as duplicate
+                    break;
+                }
+            }
+            if (duplicate) { // don't add duplicate vampires
+                i--;
+            } else {
+                this.vampires.add(new Vampire(horizontalPosition, verticalPosition)); // add vampire to list of vampires
+            }
         }
     }
 
@@ -97,6 +108,7 @@ public class DungeonMap {
         } else { // handle vampire movements
             if (collideWithMovable(dir, movable, this.player)) { // handle moving into player's space
                 deadVampires.add(movable);
+                this.vampires.removeAll(deadVampires); // remove killed vampires from list of vampires
                 return; // movable has died, movement is not completed
             }
             for (int j = 0; j < this.vampires.size(); j++) {
@@ -112,28 +124,28 @@ public class DungeonMap {
         switch (dir) {
             case UP:
                 if (this.horizontalMatches(movingMovable, stationaryMovable)) { // both movables in same column
-                    if (movingMovable.getVerticalPosition() == (stationaryMovable.getVerticalPosition() - 1)) { // movingMovable currently one step below stationaryMovable
+                    if (movingMovable.getVerticalPosition() == (stationaryMovable.getVerticalPosition() + 1)) { // movingMovable currently one step below stationaryMovable
                         return true; // moving causes a collision
                     }
                 }
                 return false;
             case DOWN:
                 if (this.horizontalMatches(movingMovable, stationaryMovable)) { // both movables in same column
-                    if (movingMovable.getVerticalPosition() == (stationaryMovable.getVerticalPosition() + 1)) { // movingMovable currently one step above stationaryMovable
+                    if (movingMovable.getVerticalPosition() == (stationaryMovable.getVerticalPosition() - 1)) { // movingMovable currently one step above stationaryMovable
                         return true; // moving causes a collision
                     }
                 }
                 return false;
             case LEFT:
                 if (this.verticalMatches(movingMovable, stationaryMovable)) { // both movables in same column
-                    if (movingMovable.getHorizontalPosition() == (stationaryMovable.getHorizontalPosition() - 1)) { // movingMovable currently one step right of stationaryMovable
+                    if (movingMovable.getHorizontalPosition() == (stationaryMovable.getHorizontalPosition() + 1)) { // movingMovable currently one step right of stationaryMovable
                         return true; // moving causes a collision
                     }
                 }
                 return false;
             case RIGHT:
                 if (this.verticalMatches(movingMovable, stationaryMovable)) { // both movables in same column
-                    if (movingMovable.getHorizontalPosition() == (stationaryMovable.getHorizontalPosition() + 1)) { // movingMovable currently one step left of stationaryMovable
+                    if (movingMovable.getHorizontalPosition() == (stationaryMovable.getHorizontalPosition() - 1)) { // movingMovable currently one step left of stationaryMovable
                         return true; // moving causes a collision
                     }
                 }
@@ -166,21 +178,23 @@ public class DungeonMap {
     }
     
     public String mapToString() {
-        StringBuilder string = new StringBuilder("");
+        StringBuilder mapString = new StringBuilder("");
         for (int i = 0; i < height; i++) {
+            StringBuilder lineString = new StringBuilder("");
             for (int j = 0; j < length; j++) {
-                string.append(".");
+                lineString.append(".");
             }
             if (this.player.getVerticalPosition() == i) {
-                string.setCharAt(this.player.getHorizontalPosition(), '@');
+                lineString.setCharAt(this.player.getHorizontalPosition(), '@');
             }
             for (Movable vampire : vampires) {
                 if (vampire.getVerticalPosition() == i) {
-                    string.setCharAt(vampire.getHorizontalPosition(), 'v');
+                    lineString.setCharAt(vampire.getHorizontalPosition(), 'v');
                 }
             }
-            string.append("\n");
+            lineString.append("\n");
+            mapString.append(lineString);
         }
-        return string.toString();
+        return mapString.toString();
     }
 }
