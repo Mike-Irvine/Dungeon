@@ -35,7 +35,7 @@ public class Vampire implements Movable {
                 this.horizontalPosition -= 1;
                 break;
             case RIGHT:
-                this.horizontalPosition =+ 1;
+                this.horizontalPosition += 1;
                 break;
             default:
                 break;
