@@ -27,6 +27,10 @@ public class DungeonMap {
             this.vampires.add(new Vampire(horizontalPosition, verticalPosition));
         }
     }
+
+    public ArrayList<Movable> getVampires() {
+        return this.vampires;
+    }
     
     public void stepPlayer(Direction dir) {
         // attempt to move player in requested direction
@@ -50,7 +54,7 @@ public class DungeonMap {
                     this.move(Direction.RIGHT, vampire);
                     break;
                 default:
-                    break;
+                    break; // will NOT execute due to range of possible random ints
             }
         }
     }
@@ -78,12 +82,90 @@ public class DungeonMap {
                     return;
                 }
                 break;
+            default: // will NOT execute due to Direction enum
         }
-        movable.move(dir); // if case didn't return, tell movable to move
+        
+        ArrayList<Movable> deadVampires = new ArrayList<>(); // create list to store killed vampires
+        
+        if (movable.equals(this.player)) { // handle player movements, and possible collisions with vampires
+            for (int i = 0; i < this.vampires.size(); i++) {
+                if (collideWithMovable(dir, this.player, this.vampires.get(i))) {
+                    deadVampires.add(this.vampires.get(i)); // in case of collision, vampire is killed
+                }
+            }
+            this.vampires.removeAll(deadVampires); // remove killed vampires from list of vampires
+        } else { // handle vampire movements
+            if (collideWithMovable(dir, movable, this.player)) { // handle moving into player's space
+                deadVampires.add(movable);
+                return; // movable has died, movement is not completed
+            }
+            for (int j = 0; j < this.vampires.size(); j++) {
+                if (collideWithMovable(dir, movable, this.vampires.get(j))) { // self-collision can't occur so no logical issue with comparing against full list of vampires
+                    return; // moving vampire collides with other vampire, movement skipped
+                }
+            }
+        }
+        movable.move(dir); // if switch case didn't exit method, tell movable to move
     }
     
-    @Override
-    public String toString() {
+    public boolean collideWithMovable(Direction dir, Movable movingMovable, Movable stationaryMovable) {
+        switch (dir) {
+            case UP:
+                if (this.horizontalMatches(movingMovable, stationaryMovable)) { // both movables in same column
+                    if (movingMovable.getVerticalPosition() == (stationaryMovable.getVerticalPosition() - 1)) { // movingMovable currently one step below stationaryMovable
+                        return true; // moving causes a collision
+                    }
+                }
+                return false;
+            case DOWN:
+                if (this.horizontalMatches(movingMovable, stationaryMovable)) { // both movables in same column
+                    if (movingMovable.getVerticalPosition() == (stationaryMovable.getVerticalPosition() + 1)) { // movingMovable currently one step above stationaryMovable
+                        return true; // moving causes a collision
+                    }
+                }
+                return false;
+            case LEFT:
+                if (this.verticalMatches(movingMovable, stationaryMovable)) { // both movables in same column
+                    if (movingMovable.getHorizontalPosition() == (stationaryMovable.getHorizontalPosition() - 1)) { // movingMovable currently one step right of stationaryMovable
+                        return true; // moving causes a collision
+                    }
+                }
+                return false;
+            case RIGHT:
+                if (this.verticalMatches(movingMovable, stationaryMovable)) { // both movables in same column
+                    if (movingMovable.getHorizontalPosition() == (stationaryMovable.getHorizontalPosition() + 1)) { // movingMovable currently one step left of stationaryMovable
+                        return true; // moving causes a collision
+                    }
+                }
+                return false;
+            default: // will NOT execute due to Direction enum
+                return false;
+        }
+    }
+    
+    public boolean horizontalMatches(Movable movableOne, Movable movableTwo) {
+        if (movableOne.getHorizontalPosition() == movableTwo.getHorizontalPosition()) {
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean verticalMatches(Movable movableOne, Movable movableTwo) {
+        if (movableOne.getVerticalPosition() == movableTwo.getVerticalPosition()) {
+            return true;
+        }
+        return false;
+    }
+    
+    public String movablesToString() {
+        String string = this.player.toString() + "\n";
+        for (Movable vampire : vampires) {
+            string += vampire.toString() + "\n";
+        }
+        return string;
+    }
+    
+    public String mapToString() {
         StringBuilder string = new StringBuilder("");
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < length; j++) {
