@@ -16,12 +16,15 @@ public class DungeonMap {
         this.length = length;
         this.height = height;
         this.player = new Player();
-        this.vampires = new ArrayList<>();
-        this.deadVampires = new ArrayList<>();
+        this.vampires = new ArrayList<Movable>();
+        this.deadVampires = new ArrayList<Movable>();
     }
     
     public void addVampires(int vampires) {
         boolean duplicate;
+        if (vampires >= (this.length * this.height)) { // limit number of vampires to fit in map area
+            vampires = this.length * this.height - 1;
+        }
         for (int i = 0; i < vampires; i++) {
             duplicate = false;
             // determine random starting location for each vampire

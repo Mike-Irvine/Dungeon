@@ -1,4 +1,4 @@
-package dungeon.logic;
+package dungeon;
 
 import dungeon.domain.DungeonMap;
 import dungeon.utility.Direction;
